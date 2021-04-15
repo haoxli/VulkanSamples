@@ -1,0 +1,23 @@
+file(GLOB UTILS_SOURCE *.cpp)
+
+if(SDK_INCLUDE_PATH)
+    include_directories( ${GLSLANG_SPIRV_INCLUDE_DIR} ${GLMINC_PREFIX} ${SDK_INCLUDE_PATH} )
+else()
+    include_directories( ${GLSLANG_SPIRV_INCLUDE_DIR} ${GLMINC_PREFIX} )
+endif()
+
+if(WIN32)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_USE_MATH_DEFINES")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_USE_MATH_DEFINES")
+
+    # If MSVC, disable some signed/unsigned mismatch warnings.
+    if (MSVC)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4267")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4267")
+    endif()
+else()
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-compare")
+endif()
+
+add_library(${UTILS_NAME} STATIC ${UTILS_SOURCE})
